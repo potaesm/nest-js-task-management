@@ -22,7 +22,7 @@ export class TasksService {
       throw new NotFoundException(`Task with ID "${id} not found"`);
     return foundTask;
   }
-  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+  createTask(createTaskDto: CreateTaskDto): Promise<Task> {
     return this.tasksRepository.createTask(createTaskDto);
   }
   // deleteTask(id: string): void {
