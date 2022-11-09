@@ -4,13 +4,13 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { SearchTaskDto } from './dto/search-task.dto';
 import { Task } from './task.entity';
 import constants from 'src/constants';
-import { Repository } from 'typeorm';
+import { TasksRepository } from './tasks.repository';
 
 @Injectable()
 export class TasksService {
   constructor(
     @Inject(constants.TASK_REPOSITORY)
-    private tasksRepository: Repository<Task>,
+    private tasksRepository: TasksRepository,
   ) {}
   // private tasks: Task[] = [];
   // getAllTasks(): Task[] {
@@ -22,17 +22,9 @@ export class TasksService {
       throw new NotFoundException(`Task with ID "${id} not found"`);
     return foundTask;
   }
-  // createTask(createTaskDto: CreateTaskDto): Task {
-  //   const { title, description } = createTaskDto;
-  //   const task: Task = {
-  //     id: uuid(),
-  //     title,
-  //     description,
-  //     status: TaskStatus.OPEN,
-  //   };
-  //   this.tasks.push(task);
-  //   return task;
-  // }
+  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+    return this.tasksRepository.createTask(createTaskDto);
+  }
   // deleteTask(id: string): void {
   //   const foundTask = this.getTaskById(id);
   //   this.tasks = this.tasks.filter((task) => task.id !== foundTask.id);
