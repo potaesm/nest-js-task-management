@@ -4,6 +4,7 @@ import { SearchTaskDto } from './dto/search-task.dto';
 import { Task } from './task.entity';
 import constants from 'src/constants';
 import { TasksRepository } from './tasks.repository';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class TasksService {
@@ -11,26 +12,31 @@ export class TasksService {
     @Inject(constants.TASK_REPOSITORY)
     private tasksRepository: TasksRepository,
   ) {}
-  async getAllTasks(searchTaskDto: SearchTaskDto): Promise<Task[]> {
-    return this.tasksRepository.getTasks(searchTaskDto);
+  async getAllTasks(searchTaskDto: SearchTaskDto, user: User): Promise<Task[]> {
+    return this.tasksRepository.getTasks(searchTaskDto, user);
   }
-  async getTaskById(id: string): Promise<Task> {
-    const foundTask = await this.tasksRepository.findOneBy({ id });
+  async getTaskById(id: string, user: User): Promise<Task> {
+    const foundTask = await this.tasksRepository.findOneBy({ id, user });
     if (!foundTask)
       throw new NotFoundException(`Task with ID "${id} not found"`);
     return foundTask;
   }
-  createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    return this.tasksRepository.createTask(createTaskDto);
+  createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+    return this.tasksRepository.createTask(createTaskDto, user);
   }
-  async deleteTask(id: string): Promise<void> {
-    const result = await this.tasksRepository.delete({ id });
+  async deleteTask(id: string, user: User): Promise<void> {
+    const result = await this.tasksRepository.delete({ id, user });
     if (!result.affected) {
       throw new NotFoundException(`Task with ID "${id} not found"`);
     }
   }
-  async updateTask(id: string, key: string, value: any): Promise<Task> {
-    const task = await this.getTaskById(id);
+  async updateTask(
+    id: string,
+    key: string,
+    value: any,
+    user: User,
+  ): Promise<Task> {
+    const task = await this.getTaskById(id, user);
     task[key] = value;
     this.tasksRepository.save(task);
     return task;

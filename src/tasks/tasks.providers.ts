@@ -1,3 +1,4 @@
+import { User } from 'src/auth/user.entity';
 import constants from 'src/constants';
 import { DataSource } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -9,21 +10,29 @@ export const tasksProviders = [
   {
     provide: constants.TASK_REPOSITORY,
     useFactory: (dataSource: DataSource) => {
-      let tasksRepository = dataSource.getRepository(Task);
-      tasksRepository = tasksRepository.extend({
-        async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
+      const tasksRepository = dataSource.getRepository(Task);
+      return tasksRepository.extend({
+        async createTask(
+          createTaskDto: CreateTaskDto,
+          user: User,
+        ): Promise<Task> {
           const { title, description } = createTaskDto;
           const task = tasksRepository.create({
             title,
             description,
             status: TaskStatus.OPEN,
+            user,
           });
           await tasksRepository.save(task);
           return task;
         },
-        async getTasks(searchTaskDto: SearchTaskDto): Promise<Task[]> {
+        async getTasks(
+          searchTaskDto: SearchTaskDto,
+          user: User,
+        ): Promise<Task[]> {
           const { status, search } = searchTaskDto;
           const query = tasksRepository.createQueryBuilder('task');
+          query.where({ user });
           if (!!status) {
             query.andWhere('task.status = :searchStatus', {
               searchStatus: status,
@@ -31,7 +40,7 @@ export const tasksProviders = [
           }
           if (!!search) {
             query.andWhere(
-              'LOWER(task.title) LIKE LOWER(:searchPhrase) OR LOWER(task.description) LIKE LOWER(:searchPhrase)',
+              '(LOWER(task.title) LIKE LOWER(:searchPhrase) OR LOWER(task.description) LIKE LOWER(:searchPhrase))',
               { searchPhrase: `%${search}%` },
             );
           }
@@ -39,7 +48,6 @@ export const tasksProviders = [
           return tasks;
         },
       });
-      return tasksRepository;
     },
     inject: [constants.DATA_SOURCE],
   },

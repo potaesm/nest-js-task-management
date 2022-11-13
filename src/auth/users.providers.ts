@@ -8,8 +8,8 @@ export const usersProviders = [
   {
     provide: constants.USER_REPOSITORY,
     useFactory: (dataSource: DataSource) => {
-      let usersRepository = dataSource.getRepository(User);
-      usersRepository = usersRepository.extend({
+      const usersRepository = dataSource.getRepository(User);
+      return usersRepository.extend({
         async createUser(
           authCredentialsDto: AuthCredentialsDto,
         ): Promise<void> {
@@ -23,7 +23,6 @@ export const usersProviders = [
           await usersRepository.save(user);
         },
       });
-      return usersRepository;
     },
     inject: [constants.DATA_SOURCE],
   },
