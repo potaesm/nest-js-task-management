@@ -21,8 +21,6 @@ export const tasksProviders = [
           await tasksRepository.save(task);
           return task;
         },
-      });
-      tasksRepository = tasksRepository.extend({
         async getTasks(searchTaskDto: SearchTaskDto): Promise<Task[]> {
           const { status, search } = searchTaskDto;
           const query = tasksRepository.createQueryBuilder('task');

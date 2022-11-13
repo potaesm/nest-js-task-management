@@ -12,7 +12,7 @@ export const databaseProviders = [
         username: 'postgres',
         password: 'postgres',
         database: 'task-management',
-        entities: [__dirname + '/*.entity{.ts,.js}'],
+        entities: [__dirname + '/*/*.entity{.ts,.js}'],
         synchronize: true,
       });
       return dataSource.initialize();
