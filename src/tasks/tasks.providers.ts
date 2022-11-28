@@ -1,3 +1,4 @@
+import { InternalServerErrorException } from '@nestjs/common';
 import { User } from 'src/auth/user.entity';
 import constants from 'src/constants';
 import { DataSource } from 'typeorm';
@@ -44,8 +45,12 @@ export const tasksProviders = [
               { searchPhrase: `%${search}%` },
             );
           }
-          const tasks = query.getMany();
-          return tasks;
+          try {
+            const tasks = query.getMany();
+            return tasks;
+          } catch (error) {
+            throw new InternalServerErrorException();
+          }
         },
       });
     },
