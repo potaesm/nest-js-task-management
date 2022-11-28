@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import constants from 'src/constants';
+import constants from './constants';
 import { DataSource } from 'typeorm';
 
 export const databaseProviders = [

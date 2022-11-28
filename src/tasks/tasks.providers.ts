@@ -1,6 +1,6 @@
 import { InternalServerErrorException } from '@nestjs/common';
-import { User } from 'src/auth/user.entity';
-import constants from 'src/constants';
+import { User } from '../auth/user.entity';
+import constants from '../constants';
 import { DataSource } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { SearchTaskDto } from './dto/search-task.dto';

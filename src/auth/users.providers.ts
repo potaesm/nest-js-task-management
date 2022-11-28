@@ -1,4 +1,4 @@
-import constants from 'src/constants';
+import constants from '../constants';
 import { DataSource } from 'typeorm';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { User } from './user.entity';

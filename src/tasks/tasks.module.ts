@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database.module';
 import { TasksController } from './tasks.controller';
 import { tasksProviders } from './tasks.providers';
